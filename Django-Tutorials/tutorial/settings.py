@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'writing',
     'listening',
     'questionpaper',
+    'teacher',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -8,9 +8,15 @@ class UserProfileManager(models.Manager):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
+    PROFILE_CHOICES = (
+        ('S', 'Student'),
+        ('T', 'Teacher'),
+    )
+    profile = models.CharField(max_length=20, choices=PROFILE_CHOICES, null=True)
+    Organisation=models.CharField(max_length=100, null=True, blank=True)
     description = models.CharField(max_length=100, default='')
     city = models.CharField(max_length=100, default='')
-    website = models.URLField(default='')
+    website = models.CharField(max_length=100, default='')
     phone = models.IntegerField(default=0)
     image = models.ImageField(upload_to='profile_image', blank=True)
 
@@ -20,8 +26,8 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-def create_profile(sender, **kwargs):
-    if kwargs['created']:
-        user_profile = UserProfile.objects.create(user=kwargs['instance'])
-
-post_save.connect(create_profile, sender=User)
+# def create_profile(sender, **kwargs):
+#     if kwargs['created']:
+#         user_profile = UserProfile.objects.create(user=kwargs['instance'])
+#
+# post_save.connect(create_profile, sender=User)

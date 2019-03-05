@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^writing/', include('writing.urls', namespace='writing')),
     url(r'^listening/', include('listening.urls', namespace='listening')),
     url(r'^paper/', include('questionpaper.urls', namespace='paper')),
+    url(r'^teacher/', include('teacher.urls', namespace='teacher')),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
