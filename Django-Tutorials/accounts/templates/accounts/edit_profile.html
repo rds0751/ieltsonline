@@ -9,6 +9,7 @@
 <div class="container">
     <form method="post">
         {% csrf_token %}
+        <input type="hidden" value="{{ usr }}" name="usr">
         {{ form.as_p }}
         <button type="submit">Submit</button>
     </form>

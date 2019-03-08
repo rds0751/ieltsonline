@@ -361,7 +361,7 @@
 {#                <th>Module</th>#}
 {#                <th>Assigned Date</th>#}
 {#                <th>Status</th>#}
-{#                <th>Delete</th>#}
+                <th>Delete</th>
 
 
               </tr>
@@ -374,7 +374,9 @@
 {#                <th>Module</th>#}
 {#                <th>Assigned Date</th>#}
 {#                <th>Status</th>#}
-{#                <th>Delete</th>#}
+                <td><a href="{% url 'teacher:delete_assign' ag.id %}">
+                    <button class="btn btn-default btn-danger" type="button">Delete</button>
+                </a></td>
               </tr>
               {% endfor %}
 

@@ -32,17 +32,22 @@ def view_profile(request, pk=None):
     args = {'user': user}
     return render(request, 'accounts/profile.html', args)
 
-def edit_profile(request):
+def edit_profile(request, part_id=None):
     if request.method == 'POST':
-        form = EditProfileForm(request.POST, instance=request.user)
+        usr = request.POST.get("usr")
+        user_edit = User.objects.filter(id=part_id)
+        for i in user_edit:
+            form = EditProfileForm(request.POST, instance=i)
 
         if form.is_valid():
             form.save()
-            return redirect(reverse('accounts:view_profile'))
+            return redirect(reverse('teacher:addStudent'))
     else:
-        form = EditProfileForm(instance=request.user)
-        args = {'form': form}
-        return render(request, 'accounts/edit_profile.html', args)
+        user_edit = User.objects.filter(id=part_id)
+        for i in user_edit:
+            form = EditProfileForm(instance=i)
+            args = {'form': form, 'usr':i}
+            return render(request, 'accounts/edit_profile.html', args)
 
 def change_password(request):
     if request.method == 'POST':
