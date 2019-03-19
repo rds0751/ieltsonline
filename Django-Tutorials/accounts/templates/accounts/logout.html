@@ -1,10 +1,80 @@
-{% extends 'base.html' %}
 
-{% block body %}
-<div class="container">
-    <h1>Logged out</h1>
-    <p>
-        You have logged out!
-    </p>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>SoftSmart CELPIP Tests</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="https://service.softsmart.in/Celpip/public/static/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://service.softsmart.in/Celpip/public/static/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="https://service.softsmart.in/Celpip/public/static/vendors/css/vendor.bundle.addons.css">
+  <!-- endinject -->
+  <!-- plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="https://service.softsmart.in/Celpip/public/static/css/style_1.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="https://service.softsmart.in/Celpip/public/static/img/images/favicon.png" />
+</head>
+
+<body>
+
+  <div class="container-scroller">
+
+    <div class="container-fluid page-body-wrapper full-page-wrapper auth-page">
+
+      <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+
+
+        <div class="row w-100" style="margin-left: 0px;">
+
+          <div class="col-lg-4 mx-auto">
+
+            <center><a href="https://www.softsmart.in" target="_blank"><img src="https://service.softsmart.in/Celpip/public/static/img/softsmart_logo1.png" style="max-width:250px;"></a></center>
+
+            <p></p>
+            <center><img src="https://service.softsmart.in/Celpip/public/static/img/celpip.png" style="max-width:150px;"></center>
+            <p></p>
+{#            <div class="auto-form-wrapper" >#}
+              <br><br>
+              <label style="color: white"><h3>you have been logged out</h3></label>
+                <br><br>
+              <a href="{% url 'accounts:login' %}">
+                <h4 style="color: white">login here<h4>
+              </a>
+
+{#            </div>#}
+            <ul class="auth-footer">
+              <li>
+                <a href="#">Conditions</a>
+              </li>
+              <li>
+                <a href="#">Help</a>
+              </li>
+              <li>
+                <a href="#">Terms</a>
+              </li>
+            </ul>
+            <p class="footer-text text-center">Copyright © 2019 SoftSmart. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="https://service.softsmart.in/Celpip/public/static/vendors/js/vendor.bundle.base.js"></script>
+  <script src="https://service.softsmart.in/Celpip/public/static/vendors/js/vendor.bundle.addons.js"></script>
+  <!-- endinject -->
+  <!-- inject:js -->
+  <script src="https://service.softsmart.in/Celpip/public/static/js/off-canvas.js"></script>
+  <script src="https://service.softsmart.in/Celpip/public/static/js/misc.js"></script>
+  <!-- endinject -->
+</body>
+
+</html>

@@ -7,7 +7,15 @@ from accounts.models import UserProfile
 
 
 class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    username = forms.CharField(max_length=20, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Username', 'tabindex': 1}), required=True)
+    email = forms.EmailField(max_length=254, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Email Address', 'tabindex': 1}), required=True)
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password', 'tabindex': 2}))
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password', 'tabindex': 2}))
+
 
     class Meta:
         model = User

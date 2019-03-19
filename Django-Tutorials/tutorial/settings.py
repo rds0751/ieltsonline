@@ -1,4 +1,5 @@
 import os
+import mimetypes
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     'listening',
     'questionpaper',
     'teacher',
+    'student',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -133,3 +135,6 @@ LOGIN_EXEMPT_URLS = (
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
+
+mimetypes.add_type("image/svg+xml", ".svg", True)
+mimetypes.add_type("image/svg+xml", ".svgz", True)

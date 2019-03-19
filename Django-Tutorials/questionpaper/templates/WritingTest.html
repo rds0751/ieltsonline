@@ -18,6 +18,41 @@
   <link rel="stylesheet" href="{% static "questions/css/style.css" %}">
   <!-- endinject -->
   <link rel="shortcut icon" href="{% static "questions/images/favicon.png"%}" />
+    <script>
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    var button = document.getElementById('Submit');
+                    button.form.submit();
+                    alert("time up");
+                }
+            }, 1000);
+        }
+
+        var next = 0;
+        function nextblock() {
+            document .getElementById("part"+next).style.display='none';
+            document .getElementById("part"+(++next)).style.display='block';
+            if(next==1){
+                document.getElementById("nextbut").style.display='none';
+            }
+        }
+
+        window.onload = function () {
+            var fiveMinutes = 60 * 40,
+                display = document.querySelector('#time');
+            startTimer(fiveMinutes, display);
+        };
+    </script>
 </head>
 
 <body>
@@ -207,34 +242,33 @@
               <br>
               <br>
           </div>
-          <div class="row">
-
-            </div>
 
             <div class="col-12 grid-margin">
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">IELTS-General Sample Test</h4>
-                    <div align="right">
-                <button type="button" class="btn btn-outline-success">Next</button>
-              </div>
+                    <div align="center">Time Left <span id="time">40:00</span> minutes!</div>
+                    <div align="right" id="nextbut" style="display: block">
+                <button type="button" class="btn btn-outline-success" onclick="nextblock()">Next</button>
+                    </div>
                 </div>
               </div>
             </div>
           </div>
 
 
-
+        <form method="POST">
+            {% csrf_token %}
         {% for obj in writing %}
 
           {% if obj.test_name == "Writing Test 1" %}
-
+          <input type="hidden" name="test_name" value="{{ obj.test_name }}">
 
 
 
             {% for objw in write %}
               {% if objw.Question_Name == obj.ques1.Question_Name %}
-        <div class="content-wrapper">
+        <div id="part0" class="content-wrapper" style="display: block">
           <div class="row">
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
@@ -261,18 +295,12 @@
                   <h4 class="card-title text-primary"> {{ obj.Instructions }}</h4>
               <div align="left">
                 <div class="col-md-12">
-                    <form method="POST">
-                        {% csrf_token %}
                         <div class="form-group">
-                            <input type="hidden" name="test_name" value="{{ obj.test_name }}">
-                            <input type="hidden" name="ques1" value="{{ obj.ques1 }}">
-                            <input type="hidden" value="{{ objw.Question_Name }}">
-                      <textarea name = "xyz" class="form-control" id="exampleTextarea1" rows="20"></textarea></br>
-                            <div align="right">
-                <button type="submit" class="btn btn-outline-success">Submit</button>
-              </div>
+
+                            <input type="hidden" name="ques1_id" value="{{ obj.ques1.id }}">
+                      <textarea name = "ans1" class="form-control" id="exampleTextarea1" rows="20"></textarea></br>
                     </div>
-                        </form>
+
                       </div>
                     </div>
                   </div>
@@ -283,7 +311,6 @@
           </div>
               {% endif %}
             {% endfor %}
-        </div>
           {% endif %}
       {% endfor %}
 
@@ -300,7 +327,7 @@
 
             {% for objw in write %}
               {% if objw.Question_Name == obj.ques2.Question_Name %}
-        <div class="content-wrapper">
+        <div id="part1" class="content-wrapper" style="display: none">
           <div class="row">
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
@@ -327,15 +354,11 @@
                   <h4 class="card-title text-primary"> {{ obj.Instructions }}</h4>
               <div align="left">
                 <div class="col-md-12">
-                    <form method="POST">
-                        {% csrf_token %}
                         <div class="form-group">
-                            <input type="hidden" name="test_name" value="{{ obj.test_name }}">
-                            <input type="hidden" name="ques" value="{{ obj.ques2 }}">
-                            <input type="hidden" value="{{ objw.Question_Name }}">
-                      <textarea name = "xyz" class="form-control" id="exampleTextarea1" rows="20"></textarea></br>
+                            <input type="hidden" name="ques2_id" value="{{ obj.ques2 }}">
+                      <textarea name = "ans2" class="form-control" id="exampleTextarea1" rows="20"></textarea></br>
                             <div align="right">
-                <button type="submit" class="btn btn-outline-success">Submit</button>
+                <button type="submit" class="btn btn-outline-success" id="Submit">Submit</button>
               </div>
                     </div>
                         </form>

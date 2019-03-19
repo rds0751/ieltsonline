@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Star Admin Free Bootstrap Admin Dashboard Template</title>
+  <title>SoftSmart IELTS Test</title>
   <!-- plugins:css -->
     {% load static %}
   <link rel="stylesheet" href="{% static 'questions/vendors/iconfonts/mdi/css/materialdesignicons.min.css'%}">
@@ -41,9 +41,40 @@
           ev.preventDefault();
           var data = ev.dataTransfer.getData("text");
           ev.target.appendChild(document.getElementById(data));
-{#          alert(document.getElementById(data).innerhtml);#}
           document.getElementById(ev.target.getAttribute("name")).value=document.getElementById(data).innerHTML;
         }
+
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000);
+        }
+
+        var next = 0;
+        function nextblock() {
+            document .getElementById("part"+next).style.display='none';
+            document .getElementById("part"+(++next)).style.display='block';
+            if(next==2){
+                document.getElementById("nextbut").style.display='none';
+            }
+        }
+
+        window.onload = function () {
+            var fiveMinutes = 60 * 60,
+                display = document.querySelector('#time');
+            startTimer(fiveMinutes, display);
+        };
     </script>
 
 </head>
@@ -63,17 +94,17 @@
       <div class="navbar-menu-wrapper d-flex align-items-center">
         <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
           <li class="nav-item">
-            <a href="#" class="nav-link">Schedule
+            <a href="#" class="nav-link">New Test Coming Soon
               <span class="badge badge-primary ml-1">New</span>
             </a>
           </li>
-          <li class="nav-item active">
+          <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="mdi mdi-elevation-rise"></i>Reports</a>
+            </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="mdi mdi-bookmark-plus-outline"></i>Score</a>
+            </a>
           </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
@@ -189,8 +220,8 @@
           </li>
           <li class="nav-item dropdown d-none d-xl-inline-block">
             <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-              <span class="profile-text">Hello, Richard V.Welsh !</span>
-              <img class="img-xs rounded-circle" src="images/faces/face1.jpg" alt="Profile image">
+              <span class="profile-text">Hello, {{ user }}</span>
+              <img class="img-xs rounded-circle" src="{% static 'questions/images/faces/face1.jpg' %}" alt="Profile image">
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
               <a class="dropdown-item p-0">
@@ -239,9 +270,10 @@
             <div class="col-12 grid-margin">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">CELPIP-General Sample Test</h4>
-                  <div align="right">
-                <button type="button" class="btn btn-outline-success">Next</button>
+                  <h4 class="card-title">IELTS-General Sample Test</h4>
+                    <div align="center">Time Left <span id="time">60:00</span> minutes!</div>
+                  <div id="nextbut" style="display: block" align="right">
+                <button type="button" class="btn btn-outline-success" onclick="nextblock()">Next</button>
               </div>
                 </div>
               </div>
@@ -251,10 +283,14 @@
 
         <form method="POST">
         {% csrf_token %}
+
+
+
+
         {% for obj in passage %}
         {% if obj.test_name == "Reading Test 1" %}
             <input name="test_name" type="hidden" value="{{ obj.test_name }}">
-        <div class="content-wrapper">
+        <div id="part0" style="display: block" class="content-wrapper">
           <div class="row">
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
@@ -278,7 +314,6 @@
 
 
             <div class="col-md-6 grid-margin stretch-card">
-            <form>
               <div class="card">
 
 
@@ -295,8 +330,8 @@
                               {% for objq in yesnoques %}
                                   {% if objq.linked.Question_Name == objy.Question_Name %}
                                   {{ objq.Question }}
-                                      <input type="hidden" name="ysnid[{{ forloop.counter0 }}]" value="{{ objq.id }}">
-                                      <input type="text" name="ysn[{{ forloop.counter0 }}]" class="" style="margin: 4px"><br></br>
+                                      <input type="hidden" name="ysnida[{{ forloop.counter0 }}]" value="{{ objq.id }}">
+                                      <input type="text" name="ysna[{{ forloop.counter0 }}]" class="" style="margin: 4px"><br></br>
                                   {% endif %}
                               {% endfor %}
 
@@ -314,15 +349,15 @@
                   {% if objs.passage.Question_Name == obj.ques1.Question_Name %}
                 <div class="card-body">
                   <h5>{{ objs.Question_Name }}</h5>
-                    <input type="hidden" name="sum" value="{{ objs.id }}">
+                    <input type="hidden" name="suma" value="{{ objs.id }}">
                   <h4 class="card-title text-primary">{{ objs.Instruction }}</h4>
               <div align="left">
                 <div class="col-md-12">
                         <div class="form-group row">
                           <div class="">
-                              {{ objs.part1 }} <input type="text" name="sum0" class="" style="margin: 4px"> {{ objs.part2 }} {% if objs.part3 %} <input type="text" name="sum1" class="" style="margin: 4px"> {{ objs.part3 }} {% endif %}
-                                {% if objs.part4 %} <input type="text" name="sum2" class="" style="margin: 4px"> {{ objs.part4 }} {% endif %} {% if objs.part5 %} <input type="text" name="sum3" class="" style="margin: 4px"> {{ objs.part5 }} {% endif %}
-                                {% if objs.part6 %} <input type="text" name="sum4" class=""> {{ objs.part6 }} {% endif %}{% if objs.part7 %} <input type="text" name="sum5" class=""> {{ objs.part7 }} {% endif %}
+                              {{ objs.part1 }} <input type="text" name="suma0" class="" style="margin: 4px"> {{ objs.part2 }} {% if objs.part3 %} <input type="text" name="suma1" class="" style="margin: 4px"> {{ objs.part3 }} {% endif %}
+                                {% if objs.part4 %} <input type="text" name="suma2" class="" style="margin: 4px"> {{ objs.part4 }} {% endif %} {% if objs.part5 %} <input type="text" name="suma3" class="" style="margin: 4px"> {{ objs.part5 }} {% endif %}
+                                {% if objs.part6 %} <input type="text" name="suma4" class=""> {{ objs.part6 }} {% endif %}{% if objs.part7 %} <input type="text" name="suma5" class=""> {{ objs.part7 }} {% endif %}
                           </div>
                         </div>
                       </div>
@@ -345,13 +380,13 @@
                               {% for  objq in mcqques%}
                                   {% if objq.linked.Question_Name == objm.Question_Name %}
                                       <h6>{{ objq.Question }}</h6>   </br>
-                                      <input type="hidden" name="mcq[{{ forloop.counter0 }}]" value="{{ objq.id }}">
-                                        <input type="radio" name="mcqq[{{ forloop.counter0 }}]" value="{{ objq.option1 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option1 }}<br>
-                                        <input type="radio" name="mcqq[{{ forloop.counter0 }}]" value="{{ objq.option2 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option2 }}<br>
-                                        {% if objq.option3 %}<input type="radio" name="mcqq[{{ forloop.counter0 }}]" value="{{ objq.option3 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option3 }}<br>{% endif %}
-                                        {% if objq.option4 %}<input type="radio" name="mcqq[{{ forloop.counter0 }}]" value="{{ objq.option4 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option4 }}<br>{% endif %}
-                                        {% if objq.option5 %}<input type="radio" name="mcqq[{{ forloop.counter0 }}]" value="{{ objq.option5 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option5 }}<br>{% endif %}
-                                        {% if objq.option6 %}<input type="radio" name="mcqq[{{ forloop.counter0 }}]" value="{{ objq.option6 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option6 }}<br>{% endif %}
+                                      <input type="hidden" name="mcqa[{{ forloop.counter0 }}]" value="{{ objq.id }}">
+                                        <input type="radio" name="mcqqa[{{ forloop.counter0 }}]" value="{{ objq.option1 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option1 }}<br>
+                                        <input type="radio" name="mcqqa[{{ forloop.counter0 }}]" value="{{ objq.option2 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option2 }}<br>
+                                        {% if objq.option3 %}<input type="radio" name="mcqqa[{{ forloop.counter0 }}]" value="{{ objq.option3 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option3 }}<br>{% endif %}
+                                        {% if objq.option4 %}<input type="radio" name="mcqqa[{{ forloop.counter0 }}]" value="{{ objq.option4 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option4 }}<br>{% endif %}
+                                        {% if objq.option5 %}<input type="radio" name="mcqqa[{{ forloop.counter0 }}]" value="{{ objq.option5 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option5 }}<br>{% endif %}
+                                        {% if objq.option6 %}<input type="radio" name="mcqqa[{{ forloop.counter0 }}]" value="{{ objq.option6 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option6 }}<br>{% endif %}
                                   {% endif %}
                               {% endfor %}
                           </div>
@@ -380,8 +415,8 @@
                           <div class="">
                           {% for objq in fillupques %}
                               {% if objq.linked.Question_Name == objf.Question_Name %}
-                                 <input type="hidden" name="fillup_id[{{ forloop.counter0 }}]" value="{{ objf.id }}">
-                              {{ objq.part1 }} <input type="text" name="fillup[{{ forloop.counter0 }}]" class="" style="margin: 4px"> {{ objq.part2 }}</br>
+                                 <input type="hidden" name="fillup_ida[{{ forloop.counter0 }}]" value="{{ objf.id }}">
+                              {{ objq.part1 }} <input type="text" name="fillupa[{{ forloop.counter0 }}]" class="" style="margin: 4px"> {{ objq.part2 }}</br>
                               {% endif %}
                           {% endfor %}
                           </div>
@@ -400,52 +435,52 @@
                         {% if objm.passage.Question_Name == obj.ques1.Question_Name %}
                     <div class="card-body">
                         <h5>{{ objm.Question_Name }}</h5></br>
-                    <input type="hidden" name="mat_id" value="{{ objm.id }}">
+                    <input type="hidden" name="mat_ida" value="{{ objm.id }}">
                   <h4 class="card-title text-primary">Q. {{ objm.Instruction }}</h4>
               <div align="left">
                 <div class="col-md-12">
                         <div class="form-group row">
                           <div class="">
                               {{ objm.l1 }}
-                                <input type="hidden" name="mat0" id="mat0" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat0"></div>
+                                <input type="hidden" name="mata0" id="mat0" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata0"></div>
                                 <br>
                               {{ objm.l2 }}
-                                <input type="hidden" name="mat1" id="mat1" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat1"></div>
+                                <input type="hidden" name="mata1" id="mat1" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata1"></div>
                                 <br>
                               {{ objm.l3 }}
-                                <input type="hidden" name="mat2" id="mat2" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat2"></div>
+                                <input type="hidden" name="mata2" id="mat2" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata2"></div>
                                 <br>
                               {%  if objm.l4 %}
                               {{ objm.l4 }}
-                                  <input type="hidden" name="mat3" id="mat3" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat3"></div>
+                                  <input type="hidden" name="mata3" id="mat3" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata3"></div>
                                 <br>
                               {% endif %}
                               {% if objm.l5 %}
                               {{ objm.l5 }}
-                                  <input type="hidden" name="mat4" id="mat4" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat4"></div>
+                                  <input type="hidden" name="mata4" id="mat4" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata4"></div>
                                   </br>
                               {% endif %}
                               {% if objm.l6 %}
                               {{ objm.l6 }}
-                                  <input type="hidden" name="mat5" id="mat5" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat5"></div>
+                                  <input type="hidden" name="mata5" id="mat5" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata5"></div>
                                   </br>
                               {% endif %}
                               {% if objm.l7 %}
                               {{ objm.l7 }}
-                                  <input type="hidden" name="mat6" id="mat6" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat6"></div>
+                                  <input type="hidden" name="mata6" id="mat6" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata6"></div>
                                   </br>
                               {% endif %}
                               {% if objm.l8 %}
                               {{ objm.l8 }}
-                                  <input type="hidden" name="mat7" id="mat7" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat7"></div>
+                                  <input type="hidden" name="mata7" id="mat7" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata7"></div>
                                   </br>
                               {% endif %}
                               <div id="drag1"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r1 }}</div>
@@ -462,8 +497,6 @@
                     </div>
                     </div>
                             </div>
-                            <button type="submit">Submit</button>
-                            </form>
                     {% endif %}
                     {% endfor %}
 
@@ -474,23 +507,22 @@
               </div>
             </div>
             {% endif %}
-          </div>
+
             {% endfor %}
-            </form>
 
 
             {% for obj in passage %}
         {% if obj.test_name == "Reading Test 1" %}
-        <div class="content-wrapper">
+        <div id="part1" style="display: none" class="content-wrapper">
           <div class="row">
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                    <h4>{{ obj.ques1.Question_Name }}</h4> </br>
-                  <h4 class="card-title text-primary">{{ obj.ques1.Instruction }}</h4>
+                    <h4>{{ obj.ques2.Question_Name }}</h4> </br>
+                  <h4 class="card-title text-primary">{{ obj.ques2.Instruction }}</h4>
               <div align="justify">
 
-                <p>{{ obj.ques1.passage }}</p>
+                <p>{{ obj.ques2.passage }}</p>
 
               </div>
                   <div class="table-responsive">
@@ -505,25 +537,27 @@
 
 
             <div class="col-md-6 grid-margin stretch-card">
-            <form>
               <div class="card">
 
 
 
               {% for objy in yesno %}
-                  {% if objy.passage.Question_Name == obj.ques1.Question_Name %}
+                  {% if objy.passage.Question_Name == obj.ques2.Question_Name %}
                 <div class="card-body">
                     <h5>{{ objy.Question_Name }}</h5>
-                  <h4 class="card-title text-primary">{{ objy.Instruction }}?</h4>
+                    <h4 class="card-title text-primary">{{ objy.Instruction }}?</h4>
               <div align="left">
                 <div class="col-md-15`">
                         <div class="form-group row">
                           <div class="col-sm-12">
                               {% for objq in yesnoques %}
                                   {% if objq.linked.Question_Name == objy.Question_Name %}
-                                  {{ objq.Question }}<input type="text" name="xyz" class="" style="margin: 4px"><br></br>
+                                  {{ objq.Question }}
+                                      <input type="hidden" name="ysnidb[{{ forloop.counter0 }}]" value="{{ objq.id }}">
+                                      <input type="text" name="ysnb[{{ forloop.counter0 }}]" class="" style="margin: 4px"><br></br>
                                   {% endif %}
                               {% endfor %}
+
                           </div>
                         </div>
                       </div>
@@ -535,17 +569,18 @@
 
 
               {% for objs in summary %}
-                  {% if objs.passage.Question_Name == obj.ques1.Question_Name %}
+                  {% if objs.passage.Question_Name == obj.ques2.Question_Name %}
                 <div class="card-body">
                   <h5>{{ objs.Question_Name }}</h5>
+                    <input type="hidden" name="sumb" value="{{ objs.id }}">
                   <h4 class="card-title text-primary">{{ objs.Instruction }}</h4>
               <div align="left">
                 <div class="col-md-12">
                         <div class="form-group row">
                           <div class="">
-                              {{ objs.part1 }} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part2 }} {% if objs.part3 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part3 }} {% endif %}
-                                {% if objs.part4 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part4 }} {% endif %} {% if objs.part5 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part5 }} {% endif %}
-                                {% if objs.part6 %} <input type="text" name="xyz" class=""> {{ objs.part6 }} {% endif %}{% if objs.part7 %} <input type="text" name="xyz" class=""> {{ objs.part7 }} {% endif %}
+                              {{ objs.part1 }} <input type="text" name="sumb0" class="" style="margin: 4px"> {{ objs.part2 }} {% if objs.part3 %} <input type="text" name="sumb1" class="" style="margin: 4px"> {{ objs.part3 }} {% endif %}
+                                {% if objs.part4 %} <input type="text" name="sumb2" class="" style="margin: 4px"> {{ objs.part4 }} {% endif %} {% if objs.part5 %} <input type="text" name="sumb3" class="" style="margin: 4px"> {{ objs.part5 }} {% endif %}
+                                {% if objs.part6 %} <input type="text" name="sumb4" class=""> {{ objs.part6 }} {% endif %}{% if objs.part7 %} <input type="text" name="sumb5" class=""> {{ objs.part7 }} {% endif %}
                           </div>
                         </div>
                       </div>
@@ -557,7 +592,7 @@
 
 
                   {% for objm in mcq %}
-                  {% if objm.passage.Question_Name == obj.ques1.Question_Name  %}
+                  {% if objm.passage.Question_Name == obj.ques2.Question_Name  %}
                 <div class="card-body">
                   <h5>{{ objm.Question_Name }}</h5>
                   <h4 class="card-title text-primary">{{ objm.Instruction }}</h4>
@@ -568,12 +603,13 @@
                               {% for  objq in mcqques%}
                                   {% if objq.linked.Question_Name == objm.Question_Name %}
                                       <h6>{{ objq.Question }}</h6>   </br>
-                                        <input type="radio" name="xyz" value="{{ objq.option1 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option1 }}<br>
-                                        <input type="radio" name="xyz" value="{{ objq.option2 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option2 }}<br>
-                                        {% if objq.option3 %}<input type="radio" name="xyz" value="{{ objq.option3 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option3 }}<br>{% endif %}
-                                        {% if objq.option4 %}<input type="radio" name="xyz" value="{{ objq.option4 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option4 }}<br>{% endif %}
-                                        {% if objq.option5 %}<input type="radio" name="xyz" value="{{ objq.option5 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option5 }}<br>{% endif %}
-                                        {% if objq.option6 %}<input type="radio" name="xyz" value="{{ objq.option6 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option6 }}<br>{% endif %}
+                                      <input type="hidden" name="mcqb[{{ forloop.counter0 }}]" value="{{ objq.id }}">
+                                        <input type="radio" name="mcqqb[{{ forloop.counter0 }}]" value="{{ objq.option1 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option1 }}<br>
+                                        <input type="radio" name="mcqqb[{{ forloop.counter0 }}]" value="{{ objq.option2 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option2 }}<br>
+                                        {% if objq.option3 %}<input type="radio" name="mcqqb[{{ forloop.counter0 }}]" value="{{ objq.option3 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option3 }}<br>{% endif %}
+                                        {% if objq.option4 %}<input type="radio" name="mcqqb[{{ forloop.counter0 }}]" value="{{ objq.option4 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option4 }}<br>{% endif %}
+                                        {% if objq.option5 %}<input type="radio" name="mcqqb[{{ forloop.counter0 }}]" value="{{ objq.option5 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option5 }}<br>{% endif %}
+                                        {% if objq.option6 %}<input type="radio" name="mcqqb[{{ forloop.counter0 }}]" value="{{ objq.option6 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option6 }}<br>{% endif %}
                                   {% endif %}
                               {% endfor %}
                           </div>
@@ -591,7 +627,7 @@
 
 
                   {% for objf in fillup %}
-                  {% if  objf.passage.Question_Name  ==  obj.ques1.Question_Name  %}
+                  {% if  objf.passage.Question_Name  ==  obj.ques2.Question_Name  %}
                 <div class="card-body">
                     <h5>{{ objf.Question_Name }}</h5></br>
                   <h4 class="card-title text-primary">Q. {{ objf.Instruction }}?</h4>
@@ -602,7 +638,8 @@
                           <div class="">
                           {% for objq in fillupques %}
                               {% if objq.linked.Question_Name == objf.Question_Name %}
-                              {{ objq.part1 }} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objq.part2 }}</br>
+                                 <input type="hidden" name="fillup_idb[{{ forloop.counter0 }}]" value="{{ objf.id }}">
+                              {{ objq.part1 }} <input type="text" name="fillupb[{{ forloop.counter0 }}]" class="" style="margin: 4px"> {{ objq.part2 }}</br>
                               {% endif %}
                           {% endfor %}
                           </div>
@@ -618,476 +655,55 @@
 
 
                     {% for objm in matching %}
-                        {% if objm.passage.Question_Name == obj.ques1.Question_Name %}
+                        {% if objm.passage.Question_Name == obj.ques2.Question_Name %}
                     <div class="card-body">
                         <h5>{{ objm.Question_Name }}</h5></br>
+                    <input type="hidden" name="mat_idb" value="{{ objm.id }}">
                   <h4 class="card-title text-primary">Q. {{ objm.Instruction }}</h4>
               <div align="left">
                 <div class="col-md-12">
                         <div class="form-group row">
                           <div class="">
                               {{ objm.l1 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                                <input type="hidden" name="matb0" id="mat0" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata0"></div>
                                 <br>
                               {{ objm.l2 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                                <input type="hidden" name="matb1" id="mat1" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata1"></div>
                                 <br>
                               {{ objm.l3 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                <br>
-                              {{ objm.l4 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                <br>
-                              {% if objm.l5 %}
-                              {{ objm.l5 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                  </br>
-                              {% endif %}
-                              {% if objm.l6 %}
-                              {{ objm.l6 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                  </br>
-                              {% endif %}
-                              {% if objm.l7 %}
-                              {{ objm.l7 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                  </br>
-                              {% endif %}
-                              {% if objm.l8 %}
-                              {{ objm.l8 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                  </br>
-                              {% endif %}
-                              <div id="drag1"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r1 }}</div>
-                              <div id="drag2"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r2 }}</div>
-                              <div id="drag3"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r3 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r4 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r5 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r6 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r7 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r8 }}</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
-                            </div>
-                            <button type="submit">Submit</button>
-                            </form>
-                    {% endif %}
-                    {% endfor %}
-
-                <div class="table-responsive">
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            {% endif %}
-          </div>
-            {% endfor %}
-
-
-            {% for obj in passage %}
-        {% if obj.test_name == "Reading Test 1" %}
-        <div class="content-wrapper">
-          <div class="row">
-            <div class="col-md-6 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                    <h4>{{ obj.ques1.Question_Name }}</h4> </br>
-                  <h4 class="card-title text-primary">{{ obj.ques1.Instruction }}</h4>
-              <div align="justify">
-
-                <p>{{ obj.ques1.passage }}</p>
-
-              </div>
-                  <div class="table-responsive">
-
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-{#                      right coloumn begins#}
-
-
-            <div class="col-md-6 grid-margin stretch-card">
-            <form>
-              <div class="card">
-
-
-
-              {% for objy in yesno %}
-                  {% if objy.passage.Question_Name == obj.ques1.Question_Name %}
-                <div class="card-body">
-                    <h5>{{ objy.Question_Name }}</h5>
-                  <h4 class="card-title text-primary">{{ objy.Instruction }}?</h4>
-              <div align="left">
-                <div class="col-md-15`">
-                        <div class="form-group row">
-                          <div class="col-sm-12">
-                              {% for objq in yesnoques %}
-                                  {% if objq.linked.Question_Name == objy.Question_Name %}
-                                  {{ objq.Question }}<input type="text" name="xyz" class="" style="margin: 4px"><br></br>
-                                  {% endif %}
-                              {% endfor %}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% endif %}
-              {% endfor %}
-
-
-
-              {% for objs in summary %}
-                  {% if objs.passage.Question_Name == obj.ques1.Question_Name %}
-                <div class="card-body">
-                  <h5>{{ objs.Question_Name }}</h5>
-                  <h4 class="card-title text-primary">{{ objs.Instruction }}</h4>
-              <div align="left">
-                <div class="col-md-12">
-                        <div class="form-group row">
-                          <div class="">
-                              {{ objs.part1 }} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part2 }} {% if objs.part3 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part3 }} {% endif %}
-                                {% if objs.part4 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part4 }} {% endif %} {% if objs.part5 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part5 }} {% endif %}
-                                {% if objs.part6 %} <input type="text" name="xyz" class=""> {{ objs.part6 }} {% endif %}{% if objs.part7 %} <input type="text" name="xyz" class=""> {{ objs.part7 }} {% endif %}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% endif %}
-              {% endfor %}
-
-
-
-                  {% for objm in mcq %}
-                  {% if objm.passage.Question_Name == obj.ques1.Question_Name  %}
-                <div class="card-body">
-                  <h5>{{ objm.Question_Name }}</h5>
-                  <h4 class="card-title text-primary">{{ objm.Instruction }}</h4>
-              <div align="left">
-                <div class="col-md-15`">
-                        <div class="form-group row">
-                          <div class="col-sm-12">
-                              {% for  objq in mcqques%}
-                                  {% if objq.linked.Question_Name == objm.Question_Name %}
-                                      <h6>{{ objq.Question }}</h6>   </br>
-                                        <input type="radio" name="xyz" value="{{ objq.option1 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option1 }}<br>
-                                        <input type="radio" name="xyz" value="{{ objq.option2 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option2 }}<br>
-                                        {% if objq.option3 %}<input type="radio" name="xyz" value="{{ objq.option3 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option3 }}<br>{% endif %}
-                                        {% if objq.option4 %}<input type="radio" name="xyz" value="{{ objq.option4 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option4 }}<br>{% endif %}
-                                        {% if objq.option5 %}<input type="radio" name="xyz" value="{{ objq.option5 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option5 }}<br>{% endif %}
-                                        {% if objq.option6 %}<input type="radio" name="xyz" value="{{ objq.option6 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option6 }}<br>{% endif %}
-                                  {% endif %}
-                              {% endfor %}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% endif %}
-                  {% endfor %}
-
-
-
-
-
-
-
-                  {% for objf in fillup %}
-                  {% if  objf.passage.Question_Name  ==  obj.ques1.Question_Name  %}
-                <div class="card-body">
-                    <h5>{{ objf.Question_Name }}</h5></br>
-                  <h4 class="card-title text-primary">Q. {{ objf.Instruction }}?</h4>
-                    <h4>{{ objf.Question }}</h4></br>
-              <div align="left">
-                <div class="col-md-12">
-                        <div class="form-group row">
-                          <div class="">
-                          {% for objq in fillupques %}
-                              {% if objq.linked.Question_Name == objf.Question_Name %}
-                              {{ objq.part1 }} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objq.part2 }}</br>
-                              {% endif %}
-                          {% endfor %}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                      {% endif %}
-                      {% endfor %}
-
-
-
-
-
-                    {% for objm in matching %}
-                        {% if objm.passage.Question_Name == obj.ques1.Question_Name %}
-                    <div class="card-body">
-                        <h5>{{ objm.Question_Name }}</h5></br>
-                  <h4 class="card-title text-primary">Q. {{ objm.Instruction }}</h4>
-              <div align="left">
-                <div class="col-md-12">
-                        <div class="form-group row">
-                          <div class="">
-                              {{ objm.l1 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                <br>
-                              {{ objm.l2 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                <br>
-                              {{ objm.l3 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                <br>
-                              {{ objm.l4 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                <br>
-                              {% if objm.l5 %}
-                              {{ objm.l5 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                  </br>
-                              {% endif %}
-                              {% if objm.l6 %}
-                              {{ objm.l6 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                  </br>
-                              {% endif %}
-                              {% if objm.l7 %}
-                              {{ objm.l7 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                  </br>
-                              {% endif %}
-                              {% if objm.l8 %}
-                              {{ objm.l8 }}
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                  </br>
-                              {% endif %}
-                              <div id="drag1"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r1 }}</div>
-                              <div id="drag2"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r2 }}</div>
-                              <div id="drag3"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r3 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r4 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r5 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r6 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r7 }}</div>
-                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r8 }}</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
-                            </div>
-                            <button type="submit">Submit</button>
-                            </form>
-                    {% endif %}
-                    {% endfor %}
-
-                <div class="table-responsive">
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            {% endif %}
-          </div>
-            {% endfor %}
-
-
-
-
-            {% for obj in passage %}
-        {% if obj.test_name == "Reading Test 1" %}
-        <div class="content-wrapper">
-          <div class="row">
-            <div class="col-md-6 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                    <h4>{{ obj.ques1.Question_Name }}</h4> </br>
-                  <h4 class="card-title text-primary">{{ obj.ques1.Instruction }}</h4>
-              <div align="justify">
-
-                <p>{{ obj.ques1.passage }}</p>
-
-              </div>
-                  <div class="table-responsive">
-
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-{#                      right coloumn begins#}
-
-
-            <div class="col-md-6 grid-margin stretch-card">
-            <form>
-              <div class="card">
-
-
-
-              {% for objy in yesno %}
-                  {% if objy.passage.Question_Name == obj.ques1.Question_Name %}
-                <div class="card-body">
-                    <h5>{{ objy.Question_Name }}</h5>
-                  <h4 class="card-title text-primary">{{ objy.Instruction }}?</h4>
-              <div align="left">
-                <div class="col-md-15`">
-                        <div class="form-group row">
-                          <div class="col-sm-12">
-                              {% for objq in yesnoques %}
-                                  {% if objq.linked.Question_Name == objy.Question_Name %}
-                                  {{ objq.Question }}<input type="text" name="xyz" class="" style="margin: 4px"><br></br>
-                                  {% endif %}
-                              {% endfor %}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% endif %}
-              {% endfor %}
-
-
-
-              {% for objs in summary %}
-                  {% if objs.passage.Question_Name == obj.ques1.Question_Name %}
-                <div class="card-body">
-                  <h5>{{ objs.Question_Name }}</h5>
-                  <h4 class="card-title text-primary">{{ objs.Instruction }}</h4>
-              <div align="left">
-                <div class="col-md-12">
-                        <div class="form-group row">
-                          <div class="">
-                              {{ objs.part1 }} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part2 }} {% if objs.part3 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part3 }} {% endif %}
-                                {% if objs.part4 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part4 }} {% endif %} {% if objs.part5 %} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objs.part5 }} {% endif %}
-                                {% if objs.part6 %} <input type="text" name="xyz" class=""> {{ objs.part6 }} {% endif %}{% if objs.part7 %} <input type="text" name="xyz" class=""> {{ objs.part7 }} {% endif %}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% endif %}
-              {% endfor %}
-
-
-
-                  {% for objm in mcq %}
-                  {% if objm.passage.Question_Name == obj.ques1.Question_Name  %}
-                <div class="card-body">
-                  <h5>{{ objm.Question_Name }}</h5>
-                  <h4 class="card-title text-primary">{{ objm.Instruction }}</h4>
-              <div align="left">
-                <div class="col-md-15`">
-                        <div class="form-group row">
-                          <div class="col-sm-12">
-                              {% for  objq in mcqques%}
-                                  {% if objq.linked.Question_Name == objm.Question_Name %}
-                                      <h6>{{ objq.Question }}</h6>   </br>
-                                        <input type="radio" name="xyz" value="{{ objq.option1 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option1 }}<br>
-                                        <input type="radio" name="xyz" value="{{ objq.option2 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option2 }}<br>
-                                        {% if objq.option3 %}<input type="radio" name="xyz" value="{{ objq.option3 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option3 }}<br>{% endif %}
-                                        {% if objq.option4 %}<input type="radio" name="xyz" value="{{ objq.option4 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option4 }}<br>{% endif %}
-                                        {% if objq.option5 %}<input type="radio" name="xyz" value="{{ objq.option5 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option5 }}<br>{% endif %}
-                                        {% if objq.option6 %}<input type="radio" name="xyz" value="{{ objq.option6 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option6 }}<br>{% endif %}
-                                  {% endif %}
-                              {% endfor %}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% endif %}
-                  {% endfor %}
-
-
-
-
-
-
-
-                  {% for objf in fillup %}
-                  {% if  objf.passage.Question_Name  ==  obj.ques1.Question_Name  %}
-                <div class="card-body">
-                    <h5>{{ objf.Question_Name }}</h5></br>
-                  <h4 class="card-title text-primary">Q. {{ objf.Instruction }}?</h4>
-                    <h4>{{ objf.Question }}</h4></br>
-              <div align="left">
-                <div class="col-md-12">
-                        <div class="form-group row">
-                          <div class="">
-                          {% for objq in fillupques %}
-                              {% if objq.linked.Question_Name == objf.Question_Name %}
-                              {{ objq.part1 }} <input type="text" name="xyz" class="" style="margin: 4px"> {{ objq.part2 }}</br>
-                              {% endif %}
-                          {% endfor %}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                      {% endif %}
-                      {% endfor %}
-
-
-
-
-
-                    {% for objm in matching %}
-                        {% if objm.passage.Question_Name == obj.ques1.Question_Name %}
-                    <div class="card-body">
-                        <h5>{{ objm.Question_Name}}</h5></br>
-
-                    <input type="hidden" name="mat_id" value="{{ objm.id }}">
-                  <h4 class="card-title text-primary">Q. {{ objm.Instruction }}</h4>
-              <div align="left">
-                <div class="col-md-12">
-                        <div class="form-group row">
-                          <div class="">
-                              {{ objm.l1 }}
-                                <input type="hidden" name="mat0" id="xyz" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat0"></div>
-                                <br>
-                              {{ objm.l2 }}
-                                <input type="hidden" name="mat1" id="xyz" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat1"></div>
-                                <br>
-                              {{ objm.l3 }}
-                                <input type="hidden" name="mat2" id="xyz" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat2"></div>
+                                <input type="hidden" name="matb2" id="mat2" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata2"></div>
                                 <br>
                               {%  if objm.l4 %}
                               {{ objm.l4 }}
-                                  <input type="hidden" name="mat3" id="xyz" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat3"></div>
+                                  <input type="hidden" name="matb3" id="mat3" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata3"></div>
                                 <br>
                               {% endif %}
                               {% if objm.l5 %}
                               {{ objm.l5 }}
-                                  <input type="hidden" name="mat4" id="xyz" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat4"></div>
+                                  <input type="hidden" name="matb4" id="mat4" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata4"></div>
                                   </br>
                               {% endif %}
                               {% if objm.l6 %}
                               {{ objm.l6 }}
-                                  <input type="hidden" name="mat5" id="xyz" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat5"></div>
+                                  <input type="hidden" name="matb5" id="mat5" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata5"></div>
                                   </br>
                               {% endif %}
                               {% if objm.l7 %}
                               {{ objm.l7 }}
-                                  <input type="hidden" name="mat6" id="xyz" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat6"></div>
+                                  <input type="hidden" name="matb6" id="mat6" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata6"></div>
                                   </br>
                               {% endif %}
                               {% if objm.l8 %}
                               {{ objm.l8 }}
-                                  <input type="hidden" name="mat7" id="xyz" value="" >
-                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mat7"></div>
+                                  <input type="hidden" name="matb7" id="mat7" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata7"></div>
                                   </br>
                               {% endif %}
                               <div id="drag1"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r1 }}</div>
@@ -1104,8 +720,6 @@
                     </div>
                     </div>
                             </div>
-                            <button type="submit">Submit</button>
-                            </form>
                     {% endif %}
                     {% endfor %}
 
@@ -1116,23 +730,231 @@
               </div>
             </div>
             {% endif %}
-          </div>
+
             {% endfor %}
 
 
 
 
-        </div>
-        <div class="col-12 grid-margin">
+
+            {% for obj in passage %}
+        {% if obj.test_name == "Reading Test 1" %}
+            <input name="test_name" type="hidden" value="{{ obj.test_name }}">
+        <div id="part2" style="display: none" class="content-wrapper">
+          <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <div align="right">
-                <button type="button" class="btn btn-outline-danger">Back</button>
+                    <h4>{{ obj.ques3.Question_Name }}</h4> </br>
+                  <h4 class="card-title text-primary">{{ obj.ques3.Instruction }}</h4>
+              <div align="justify">
+                <p>{{ obj.ques3.passage }}</p>
               </div>
                 </div>
               </div>
             </div>
 
+
+{#                      right coloumn begins#}
+
+
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+
+
+
+              {% for objy in yesno %}
+                  {% if objy.passage.Question_Name == obj.ques3.Question_Name %}
+                <div class="card-body">
+                    <h5>{{ objy.Question_Name }}</h5>
+                    <h4 class="card-title text-primary">{{ objy.Instruction }}?</h4>
+              <div align="left">
+                <div class="col-md-15`">
+                        <div class="form-group row">
+                          <div class="col-sm-12">
+                              {% for objq in yesnoques %}
+                                  {% if objq.linked.Question_Name == objy.Question_Name %}
+                                  {{ objq.Question }}
+                                      <input type="hidden" name="ysnidc[{{ forloop.counter0 }}]" value="{{ objq.id }}">
+                                      <input type="text" name="ysnc[{{ forloop.counter0 }}]" class="" style="margin: 4px"><br></br>
+                                  {% endif %}
+                              {% endfor %}
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+              {% endfor %}
+
+
+
+              {% for objs in summary %}
+                  {% if objs.passage.Question_Name == obj.ques3.Question_Name %}
+                <div class="card-body">
+                  <h5>{{ objs.Question_Name }}</h5>
+                    <input type="hidden" name="sumc" value="{{ objs.id }}">
+                  <h4 class="card-title text-primary">{{ objs.Instruction }}</h4>
+              <div align="left">
+                <div class="col-md-12">
+                        <div class="form-group row">
+                          <div class="">
+                              {{ objs.part1 }} <input type="text" name="sumc0" class="" style="margin: 4px"> {{ objs.part2 }} {% if objs.part3 %} <input type="text" name="sumc1" class="" style="margin: 4px"> {{ objs.part3 }} {% endif %}
+                                {% if objs.part4 %} <input type="text" name="sumc2" class="" style="margin: 4px"> {{ objs.part4 }} {% endif %} {% if objs.part5 %} <input type="text" name="sumc3" class="" style="margin: 4px"> {{ objs.part5 }} {% endif %}
+                                {% if objs.part6 %} <input type="text" name="sumc4" class=""> {{ objs.part6 }} {% endif %}{% if objs.part7 %} <input type="text" name="sumc5" class=""> {{ objs.part7 }} {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+              {% endfor %}
+
+
+
+                  {% for objm in mcq %}
+                  {% if objm.passage.Question_Name == obj.ques3.Question_Name  %}
+                <div class="card-body">
+                  <h5>{{ objm.Question_Name }}</h5>
+                  <h4 class="card-title text-primary">{{ objm.Instruction }}</h4>
+              <div align="left">
+                <div class="col-md-15`">
+                        <div class="form-group row">
+                          <div class="col-sm-12">
+                              {% for  objq in mcqques%}
+                                  {% if objq.linked.Question_Name == objm.Question_Name %}
+                                      <h6>{{ objq.Question }}</h6>   </br>
+                                      <input type="hidden" name="mcqc[{{ forloop.counter0 }}]" value="{{ objq.id }}">
+                                        <input type="radio" name="mcqqc[{{ forloop.counter0 }}]" value="{{ objq.option1 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option1 }}<br>
+                                        <input type="radio" name="mcqqc[{{ forloop.counter0 }}]" value="{{ objq.option2 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option2 }}<br>
+                                        {% if objq.option3 %}<input type="radio" name="mcqqc[{{ forloop.counter0 }}]" value="{{ objq.option3 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option3 }}<br>{% endif %}
+                                        {% if objq.option4 %}<input type="radio" name="mcqqc[{{ forloop.counter0 }}]" value="{{ objq.option4 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option4 }}<br>{% endif %}
+                                        {% if objq.option5 %}<input type="radio" name="mcqqc[{{ forloop.counter0 }}]" value="{{ objq.option5 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option5 }}<br>{% endif %}
+                                        {% if objq.option6 %}<input type="radio" name="mcqqc[{{ forloop.counter0 }}]" value="{{ objq.option6 }}">&nbsp&nbsp&nbsp&nbsp{{ objq.option6 }}<br>{% endif %}
+                                  {% endif %}
+                              {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+
+
+
+
+
+
+
+                  {% for objf in fillup %}
+                  {% if  objf.passage.Question_Name  ==  obj.ques3.Question_Name  %}
+                <div class="card-body">
+                    <h5>{{ objf.Question_Name }}</h5></br>
+                  <h4 class="card-title text-primary">Q. {{ objf.Instruction }}?</h4>
+                    <h4>{{ objf.Question }}</h4></br>
+              <div align="left">
+                <div class="col-md-12">
+                        <div class="form-group row">
+                          <div class="">
+                          {% for objq in fillupques %}
+                              {% if objq.linked.Question_Name == objf.Question_Name %}
+                                 <input type="hidden" name="fillup_idc[{{ forloop.counter0 }}]" value="{{ objf.id }}">
+                              {{ objq.part1 }} <input type="text" name="fillupc[{{ forloop.counter0 }}]" class="" style="margin: 4px"> {{ objq.part2 }}</br>
+                              {% endif %}
+                          {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                      {% endif %}
+                      {% endfor %}
+
+
+
+
+
+                    {% for objm in matching %}
+                        {% if objm.passage.Question_Name == obj.ques3.Question_Name %}
+                    <div class="card-body">
+                        <h5>{{ objm.Question_Name }}</h5></br>
+                    <input type="hidden" name="mat_idc" value="{{ objm.id }}">
+                  <h4 class="card-title text-primary">Q. {{ objm.Instruction }}</h4>
+              <div align="left">
+                <div class="col-md-12">
+                        <div class="form-group row">
+                          <div class="">
+                              {{ objm.l1 }}
+                                <input type="hidden" name="matc0" id="mat0" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata0"></div>
+                                <br>
+                              {{ objm.l2 }}
+                                <input type="hidden" name="matc1" id="mat1" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata1"></div>
+                                <br>
+                              {{ objm.l3 }}
+                                <input type="hidden" name="matc2" id="mat2" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata2"></div>
+                                <br>
+                              {%  if objm.l4 %}
+                              {{ objm.l4 }}
+                                  <input type="hidden" name="matc3" id="mat3" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata3"></div>
+                                <br>
+                              {% endif %}
+                              {% if objm.l5 %}
+                              {{ objm.l5 }}
+                                  <input type="hidden" name="matc4" id="mat4" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata4"></div>
+                                  </br>
+                              {% endif %}
+                              {% if objm.l6 %}
+                              {{ objm.l6 }}
+                                  <input type="hidden" name="matc5" id="mat5" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata5"></div>
+                                  </br>
+                              {% endif %}
+                              {% if objm.l7 %}
+                              {{ objm.l7 }}
+                                  <input type="hidden" name="matc6" id="mat6" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata6"></div>
+                                  </br>
+                              {% endif %}
+                              {% if objm.l8 %}
+                              {{ objm.l8 }}
+                                  <input type="hidden" name="matc7" id="mat7" value="" >
+                              <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" name="mata7"></div>
+                                  </br>
+                              {% endif %}
+                              <div id="drag1"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r1 }}</div>
+                              <div id="drag2"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r2 }}</div>
+                              <div id="drag3"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r3 }}</div>
+                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r4 }}</div>
+                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r5 }}</div>
+                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r6 }}</div>
+                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r7 }}</div>
+                              <div id="drag4"  draggable="true" ondragstart="drag(event)" width="336" height="69">{{ objm.r8 }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                            </div>
+
+                    {% endif %}
+                    {% endfor %}
+
+                </div>
+              </div>
+                <div align="right">
+                <button type="submit">Submit</button>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </form>
 
 
 
