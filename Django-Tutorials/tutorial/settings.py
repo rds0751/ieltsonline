@@ -70,15 +70,14 @@ WSGI_APPLICATION = 'tutorial.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+    'default': dj_database_url.config(
+        default='postgres://jukiukuhyynpzw:1e7d2a6a54f65d25d9fb7bbee7ee9369b1fc8a945149dcdf5f76426d1aacf3ff@ec2-54-225-95-183.compute-1.amazonaws.com:5432/d7pbh680n54qc0',
+        conn_max_age=600)}
 
-
+    
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
